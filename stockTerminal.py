@@ -3,7 +3,7 @@ import os
 
 class User:
     def __init__(self,user):
-        with open(f"{os.getcwd()}programFiles\\{user}.logf","r") as userFile:
+        with open(f"{os.getcwd()}\\programFiles\\{user}.logf","w") as userFile:
             userData = userFile.readLines()
 
 
