@@ -3,8 +3,13 @@ import os
 
 class User:
     def __init__(self,user):
-        with open(f"{os.getcwd()}\\programFiles\\{user}.logf","w") as userFile:
-            userData = userFile.readLines()
+        try:
+            with open(f"{os.getcwd()}/programFiles/{user}.logf","r") as userFile:
+                userData = userFile.readLines()
+        except:
+            with open(f"{os.getcwd()}/programFiles/template.logf","r") as template:
+                with open(f"{os.getcwd()}/programFiles/{user}.logf","w") as userFile:
+                    
 
 
 user = input("Username: ")
