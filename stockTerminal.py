@@ -3,13 +3,37 @@ import os
 
 class User:
     def __init__(self,user):
+        created = False
         try:
             with open(f"{os.getcwd()}/programFiles/{user}.logf","r") as userFile:
                 userData = userFile.readLines()
         except:
             with open(f"{os.getcwd()}/programFiles/template.logf","r") as template:
                 with open(f"{os.getcwd()}/programFiles/{user}.logf","w") as userFile:
-                    
+                    templateData = template.read()
+                    userFile.write(templateData)
+                    userData = template.readlines()
+                    created = True
+
+        bank = userData[0][:-1].split(",")
+        stocks = [stockrow.split(",")[0] for stockrow in userData[1:]]
+
+        user.money = int(bank[1])
+        user.worth = user.money
+        user.stocks = {}
+        if not created:
+            for stock in stocks:
+                stockSearch = stock.makeSearch(stock)
+                if stockSearch[1] != 'USD':
+                    stockPrice = int(input(f"Your stock {stock} has its price in {stockSearch[1]} please convert {stockSearch[0]} {stockSearch[1]} to USD"))
+                else:
+                    stockPrice = stockSearch[0]
+                user.worth += stockPrice
+                user.stocks[stock] = stockPrice
+
+
+        
+        
 
 
 user = input("Username: ")
