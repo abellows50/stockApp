@@ -30,7 +30,14 @@ class User:
                     stockPrice = stockSearch[0]
                 user.worth += stockPrice
                 user.stocks[stock] = stockPrice
-
+                self.printToUser()
+                
+    def printToUser(self):                
+        print(f"Your Net Worth: {user.worth}")
+        print(f"Your Free Money: {user.money}")
+        print(f"Your Stock Holdings:")
+        for key in user.stocks.keys():
+            print(f"{key}:{user.stocks[key]}")
 
         
         
