@@ -25,10 +25,13 @@ class User:
 
         stocks = [stockrow[:-1].split(",")[:3] for stockrow in userData[1:]] #extracts the stocks (this is number,stock,price)
         
-        for mystock in range(len(stocks)): #Convert all str's to int
-            print(stocks)
-            stocks[mystock][0] = float(stocks[mystock][0])
-            stocks[mystock][2] = float(stocks[mystock][2])
+        try:
+            for mystock in range(len(stocks)): #Convert all str's to int
+                print(stocks)
+                stocks[mystock][0] = float(stocks[mystock][0])
+                stocks[mystock][2] = float(stocks[mystock][2])
+        except:
+            pass
 
         self.money = int(bank[1])
         self.worth = self.money
@@ -145,5 +148,5 @@ class User:
 #         myUsers.append("")     
      
 
-theuser = User("Abel")
+theuser = User(input("USER: "))
 
