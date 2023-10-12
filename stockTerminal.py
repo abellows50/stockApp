@@ -4,6 +4,7 @@ import datetime
 
 class User:
     def __init__(self,user):
+        self.user = user
         created = False
         try:
             # with open(f"{os.getcwd()}/programFiles/{user}.logf","r") as userFile:
@@ -22,10 +23,12 @@ class User:
         bank = userData[0][:-1].split(",")[:2] #contains the users total money
         dates = userData[0][:-1].split(",")[2:-1] #gets the dates of last use
 
-        stocks = [stockrow.split(",")[:2] for stockrow in userData[1:]] #extracts the stocks (this is number,stock)
+        stocks = [stockrow[:-1].split(",")[:3] for stockrow in userData[1:]] #extracts the stocks (this is number,stock,price)
         
         for mystock in range(len(stocks)): #Convert all str's to int
-            stocks[mystock][0] = int(stocks[mystock][0])
+            print(stocks)
+            stocks[mystock][0] = float(stocks[mystock][0])
+            stocks[mystock][2] = float(stocks[mystock][2])
 
         self.money = int(bank[1])
         self.worth = self.money
@@ -38,7 +41,7 @@ class User:
                 else:
                     stockPrice = stockSearch[0]
                 self.worth += stockPrice * mystock[0]
-                self.stocks[mystock[1]] = [stockPrice,mystock[0]]
+                self.stocks[mystock[1]] = [mystock[0],stockPrice]
         self.printToUser()
         self.userInteractive()
                 
@@ -51,7 +54,13 @@ class User:
             print(f"{key}:{self.stocks[key]}")
 
     def exit(self):
-        pass
+        file = f"MONEY,{self.money}\n"
+        for mystock in self.stocks.keys():
+            file += f"{self.stocks[mystock][0]},{mystock},{self.stocks[mystock][1]}\n"
+        
+        with open(f"{os.getcwd()}/programFiles/{self.user}.logf","w") as userFile:
+            userFile.write(file)
+        self.printToUser()
 
     def buy(self):
         purchase = input("stock to buy>> ")
@@ -64,20 +73,44 @@ class User:
             
             if input(f"{purchase} costs {stockPrice} USD. continue? [y/n]>> ") == "y":
                 shares = int(input("how many shares do you want to buy>> "))
-                if self.worth - stockPrice *shares < 0:
+                if self.money - stockPrice *shares < 0:
                     print("ERR: not enough money to procede")
                 else:
                     if input(f"buy {shares} [y/n]>> ") == "y":
-                            self.worth -= stockPrice
+                            self.money -= stockPrice * shares
+                            self.worth -= stockPrice * shares
                             self.stocks[purchase] = [shares,stockPrice]
-                            print(f"bought {shares} shares of {purchase} at {stockPrice}. net worth is now {self.worth}")
+                            print(f"bought {shares} shares of {purchase} at {stockPrice}. free money is now {self.money}")
                             print(self.stocks)
         except:
             print("ERR: stock not found")
         
 
     def sell(self):
-        pass
+        sale = input("stock to sell>> ")
+    
+        purchaseData = stock.makeSearch(sale)
+        if purchaseData[1] != 'USD':
+            stockPrice = int(input(f"Your stock {sale} has its price in {purchaseData[1]} please convert {purchaseData[0]} {purchaseData[1]} to USD"))
+        else:
+            stockPrice = int(purchaseData[0])
+        
+        if input(f"{sale} costs {stockPrice} USD. continue? [y/n]>> ") == "y":
+            shares = int(input("how many shares do you want to sell>> "))
+            print(self.stocks)
+            if self.stocks[sale][0] <= shares:                
+                print("ERR: not enough shares to procede")
+            else:
+                if input(f"sell {shares} [y/n]>> ") == "y":
+                       
+                        self.money += stockPrice * shares
+                        if shares != self.stocks[sale][0]:
+                            self.stocks[sale] = [self.stocks[sale][0]-shares,stockPrice]
+                        else:
+                            del self.stocks[sale]
+                        print(f"bought {shares} shares of {sale} at {stockPrice}. net worth is now {self.worth}")
+                        print(self.stocks)
+        
 
     def graph(self):
         pass
