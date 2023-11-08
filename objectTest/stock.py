@@ -23,7 +23,7 @@ def makeSearch(stock):
   url = f"https://www.google.com/search?channel=fs&client=ubuntu&q={stock}+stock"
   search = requests.get(url)
   try:
-    return (extractPrice(search.text), extractCurrency(search.text))
+    return Stock(stock, extractPrice(search.text), extractCurrency(search.text))
   except:
     return False
 
@@ -35,5 +35,15 @@ def stocks(stockList,startName):
       matches.append(stock)
   return matches
 
-x = makeSearch("AMZN")
-print(x)
+class Stock:
+    def __init__(self, name, price, currency):
+        self.name = name;
+        self.price = price;
+        self.currency = currency;
+    def print(self):
+        print(f"_________{self.name}__________")
+        print(f"Price: {self.price} {self.currency}")
+
+# x = makeSearch("AMZN")
+# print(x)
+# x.print();
